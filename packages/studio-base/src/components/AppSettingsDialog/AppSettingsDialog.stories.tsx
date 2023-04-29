@@ -105,12 +105,8 @@ export const ChangingLanguage: StoryObj = {
     userEvent.click(input);
 
     userEvent.keyboard("中文");
-    const chinese_item = await screen.findByText("中文", { exact: false });
-    userEvent.click(chinese_item);
-
-    userEvent.keyboard("日本語");
-    const japanese_item = await screen.findByText("日本語", { exact: false });
-    userEvent.click(japanese_item);
+    const item = await screen.findByText("中文", { exact: false });
+    userEvent.click(item);
   },
 };
 

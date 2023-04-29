@@ -2,7 +2,9 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-export const threeDee = {
+import { TypeOptions } from "i18next";
+
+export const threeDee: Partial<TypeOptions["resources"]["threeDee"]> = {
   frame: "フレーム",
   color: "色",
   position: "位置",
@@ -13,7 +15,7 @@ export const threeDee = {
   // Frame
   displayFrame: "フレームを表示する",
   displayFrameHelp:
-    "カメラを配置する座標フレーム。カメラの位置と向きは、このフレームの原点に相対的です。",
+    "カメラを配置するための座標フレームです。カメラの位置と向きは、このフレームの原点を基準とした相対的なものとなります。",
   followMode: "フォローモード",
   followModeHelp:
     "再生中のカメラの動作を変更し、表示フレームをフォローするかどうかを選択できます。",
@@ -21,7 +23,7 @@ export const threeDee = {
   fixed: "固定",
   frameNotFound: "フレーム {{followFrameId}} が見つかりません",
   noCoordinateFramesFound: "座標フレームが見つかりません",
-  enablePreloading: "プリロードを有効にする",
+  enablePreloading: "事前の読み込みを有効にする",
   lineColor: "ラインの色",
   axisScale: "軸のスケール",
   labelSize: "ラベルのサイズ",

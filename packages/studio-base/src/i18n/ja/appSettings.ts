@@ -2,7 +2,9 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-export const appSettings = {
+import { TypeOptions } from "i18next";
+
+export const appSettings: Partial<TypeOptions["resources"]["appSettings"]> = {
   settings: "設定",
   colorScheme: "カラースキーム",
   dark: "ダーク",
@@ -25,7 +27,7 @@ export const appSettings = {
   sendAnonymizedUsageData: "匿名化された使用データを送信して、Foxglove Studioの改善に役立てる",
   sendAnonymizedCrashReports: "匿名化されたクラッシュレポートを送信",
   experimentalFeatures: "実験的機能",
-  experimentalFeaturesDescription: "これらの機能は不安定であり、毎日の使用には推奨されません。",
+  experimentalFeaturesDescription: "これらの機能は挙動が不安定なため、日々の利用は推奨されません。",
   noExperimentalFeatures: "現在、実験的機能はありません。",
   studioDebugPanels: "Studioデバッグパネル",
   studioDebugPanelsDescription: "「パネルを追加」リストにFoxglove Studioデバッグパネルを表示する。",

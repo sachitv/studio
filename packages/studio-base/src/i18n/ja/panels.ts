@@ -2,7 +2,9 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-export const panels = {
+import { TypeOptions } from "i18next";
+
+export const panels: Partial<TypeOptions["resources"]["panels"]> = {
   "3D": "3D",
   newImage: "🚧 画像",
   "3DPanelDescription": "マーカーやカメラ映像、メッシュ、URDFなどを3Dシーンで表示します。",

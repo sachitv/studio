@@ -2,7 +2,9 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-export const openDialog = {
+import { TypeOptions } from "i18next";
+
+export const openDialog: Partial<TypeOptions["resources"]["openDialog"]> = {
   // Start
   newToFoxgloveStudio: "Foxglove Studioを初めてご利用ですか？",
   newToFoxgloveStudioDescription:
