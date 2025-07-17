@@ -26,6 +26,10 @@ import {
 } from "@lichtblick/message-path";
 import { Immutable } from "@lichtblick/suite";
 import { isTypicalFilterName } from "@lichtblick/suite-base/components/MessagePathSyntax/isTypicalFilterName";
+import {
+  MessagePathsForStructure,
+  MessagePathsForStructureArgs,
+} from "@lichtblick/suite-base/components/MessagePathSyntax/types";
 import { RosDatatypes } from "@lichtblick/suite-base/types/RosDatatypes";
 import { assertNever } from "@lichtblick/suite-base/util/assertNever";
 import naturalSort from "@lichtblick/suite-base/util/naturalSort";
@@ -173,18 +177,12 @@ export function validTerminatingStructureItem(
  */
 export function messagePathsForStructure(
   structure: MessagePathStructureItemMessage,
-  {
-    validTypes,
-    noMultiSlices,
-    messagePath = [],
-  }: {
-    validTypes?: readonly string[];
-    noMultiSlices?: boolean;
-    messagePath?: MessagePathPart[];
-  } = {},
-): { path: string; terminatingStructureItem: MessagePathStructureItem }[] {
+  messagePathsStructureArgs?: MessagePathsForStructureArgs,
+): MessagePathsForStructure {
+  const { validTypes, noMultiSlices, messagePath = [] } = messagePathsStructureArgs ?? {};
+
   let clonedMessagePath = [...messagePath];
-  const messagePaths: { path: string; terminatingStructureItem: MessagePathStructureItem }[] = [];
+  const messagePaths: MessagePathsForStructure = [];
   function traverse(structureItem: MessagePathStructureItem, builtString: string) {
     if (validTerminatingStructureItem(structureItem, validTypes)) {
       messagePaths.push({ path: builtString, terminatingStructureItem: structureItem });
