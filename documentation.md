@@ -24,6 +24,16 @@ The data loading architecture in Lichtblick is designed to be flexible and perfo
 
     *   **Caching Algorithm**: The `BlockLoader`'s goal is to fill these blocks with message data. It works by identifying contiguous ranges of blocks that need the same topics and fetching the data for that entire time range at once. The cache has a hard size limit. If adding new messages would exceed this limit, the loader first attempts to free up space by removing messages for topics that are no longer subscribed to. If the cache is still full, preloading stops, and an error is reported. There is no automatic eviction of "old" blocks based on usage (like an LRU strategy); it simply fills up and then stops.
 
+### Parallel Loading: Full Preload vs. Forward Fill
+
+The data loading system is designed to run two different loading strategies in parallel to optimize the user experience for different types of panels. This is controlled by the `preloadType` property on a panel's topic subscription.
+
+*   **Forward Fill (Partial Preload):** This is the **default** strategy, used by most panels that only need to display the latest data (e.g., the Raw Messages or 3D panel). It is handled by the `BufferedIterableSource`. This component reads a small amount of data ahead of the current playback time (a "forward fill") to ensure that data is always ready for the next frame, providing smooth playback. It does *not* attempt to load the entire history for a topic.
+
+*   **Full Preload:** This strategy is used by panels that need access to the entire time series of a topic at once, such as the Plot panel. When a panel subscribes with `preloadType: "full"`, it signals to the `IterablePlayer` that it needs the complete history. This task is handled by the `BlockLoader`, which runs in the background to download and cache all the messages for that topic into its block cache.
+
+These two mechanisms run concurrently. The `BufferedIterableSource` ensures that live playback is always smooth, while the `BlockLoader` works in the background to fill in the complete data history for panels that require it.
+
 ## The Player Abstraction
 
 The `Player` is a crucial abstraction in Lichtblick. It is an interface that normalizes how the rest of the application interacts with a data source, regardless of whether that source is a static local file or a live data stream. The `MessagePipelineProvider` receives a `Player` instance and listens to the `PlayerState` objects it emits, which in turn drive all panel updates.
