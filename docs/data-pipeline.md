@@ -143,8 +143,13 @@ immediately so that the panel can render without waiting for the next tick.
    `IIterableSource` and an `IterablePlayer` to manage it.
 2. The player opens the source, reads metadata, and transitions to `Ready`.
 3. The source is wrapped in a `BufferedIterableSource` for read‑ahead.
-4. Panels declare subscriptions. If any request preloading, `BlockLoader` starts
-   filling blocks in the background.
+4. Panels declare subscriptions. The pipeline merges them into a single
+   `SubscribePayload` and forwards it to the player. When at least one
+   subscription includes `preload: true`, the player spins up a dedicated
+   `BlockLoader` task. That task keeps polling the consolidated subscription set
+   for topics that still need historical data, schedules block fetches via
+   `getBackfillMessages`, and streams those results back into the cache while
+   respecting the global memory budget.
 5. During playback, `tick()` pulls messages from the buffer, updates
    `currentTime`, and emits a new `PlayerState`.
 6. `MessagePipelineProvider` receives the state, updates its store, and
