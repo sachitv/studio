@@ -18,13 +18,12 @@ import {
   FetchAssetResponse,
   BinaryOpcode,
 } from "@foxglove/ws-protocol";
-import * as base64 from "@protobufjs/base64";
 import * as _ from "lodash-es";
 import { v4 as uuidv4 } from "uuid";
 
 import { debouncePromise } from "@lichtblick/den/async";
 import Log from "@lichtblick/log";
-import { parseChannel } from "@lichtblick/mcap-support";
+import { decodeBase64, parseChannel } from "@lichtblick/mcap-support";
 import { MessageDefinition, isMsgDefEqual } from "@lichtblick/message-definition";
 import CommonRosTypes from "@lichtblick/rosmsg-msgs-common";
 import { MessageWriter as Ros1MessageWriter } from "@lichtblick/rosmsg-serialization";
@@ -402,8 +401,9 @@ export default class FoxgloveWebSocketPlayer implements Player {
             (channel.schemaEncoding == undefined || channel.schemaEncoding === "protobuf")
           ) {
             schemaEncoding = "protobuf";
-            schemaData = new Uint8Array(base64.length(channel.schema));
-            if (base64.decode(channel.schema, schemaData, 0) !== schemaData.byteLength) {
+            try {
+              schemaData = decodeBase64(channel.schema);
+            } catch {
               throw new Error(`Failed to decode base64 schema on channel ${channel.id}`);
             }
           } else if (
@@ -411,8 +411,9 @@ export default class FoxgloveWebSocketPlayer implements Player {
             (channel.schemaEncoding == undefined || channel.schemaEncoding === "flatbuffer")
           ) {
             schemaEncoding = "flatbuffer";
-            schemaData = new Uint8Array(base64.length(channel.schema));
-            if (base64.decode(channel.schema, schemaData, 0) !== schemaData.byteLength) {
+            try {
+              schemaData = decodeBase64(channel.schema);
+            } catch {
               throw new Error(`Failed to decode base64 schema on channel ${channel.id}`);
             }
           } else if (

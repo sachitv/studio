@@ -5,7 +5,7 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-import * as base64 from "@protobufjs/base64";
+import { decodeBase64 } from "./base64";
 
 import { MessageDefinitionField } from "@lichtblick/message-definition";
 
@@ -77,13 +77,7 @@ export function parseJsonSchema(
               postprocessObject = (value) => {
                 const str = value[fieldName];
                 if (typeof str === "string") {
-                  const decoded = new Uint8Array(base64.length(str));
-                  if (base64.decode(str, decoded, 0) !== decoded.byteLength) {
-                    throw new Error(
-                      `Failed to decode base64 data for ${keyPath.concat(fieldName).join(".")}`,
-                    );
-                  }
-                  value[fieldName] = decoded;
+                  value[fieldName] = decodeBase64(str);
                 }
                 return prevPostprocess(value);
               };
