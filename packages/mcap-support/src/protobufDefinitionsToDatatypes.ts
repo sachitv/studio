@@ -4,15 +4,15 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
-import type { MessageType } from "@bufbuild/protobuf";
+import { ScalarType, type MessageType } from "@bufbuild/protobuf";
 
 type RuntimeField = ReturnType<MessageType["fields"]["list"]>[number];
 
 type MapField = RuntimeField & {
   kind: "map";
-  K: number;
+  K: ScalarType;
   V:
-    | { kind: "scalar"; T: number }
+    | { kind: "scalar"; T: ScalarType }
     | { kind: "enum"; T: { values: ReadonlyArray<{ name: string; no: number }> } }
     | { kind: "message"; T: MessageType };
 };
@@ -21,43 +21,43 @@ import { MessageDefinitionField } from "@lichtblick/message-definition";
 
 import { MessageDefinitionMap } from "./types";
 
-function protobufScalarToRosPrimitive(type: string | number): string {
+function protobufScalarToRosPrimitive(type: string | ScalarType): string {
   switch (type) {
     case "double":
-    case 1:
+    case ScalarType.DOUBLE:
       return "float64";
     case "float":
-    case 2:
+    case ScalarType.FLOAT:
       return "float32";
     case "int32":
     case "sint32":
     case "sfixed32":
-    case 5:
-    case 17:
-    case 15:
+    case ScalarType.INT32:
+    case ScalarType.SINT32:
+    case ScalarType.SFIXED32:
       return "int32";
     case "uint32":
     case "fixed32":
-    case 13:
-    case 7:
+    case ScalarType.UINT32:
+    case ScalarType.FIXED32:
       return "uint32";
     case "int64":
     case "sint64":
     case "sfixed64":
-    case 3:
-    case 18:
-    case 16:
+    case ScalarType.INT64:
+    case ScalarType.SINT64:
+    case ScalarType.SFIXED64:
       return "int64";
     case "uint64":
     case "fixed64":
-    case 4:
-    case 6:
+    case ScalarType.UINT64:
+    case ScalarType.FIXED64:
       return "uint64";
     case "bool":
-    case 8:
+    case ScalarType.BOOL:
       return "bool";
     case "string":
-    case 9:
+    case ScalarType.STRING:
       return "string";
   }
   throw new Error(`Expected protobuf scalar type, got ${type}`);
@@ -124,7 +124,7 @@ function addFieldDefinition(
         });
         break;
       }
-      if (field.T === 12) {
+      if (field.T === ScalarType.BYTES) {
         if (field.repeated) {
           throw new Error("Repeated bytes are not currently supported");
         }
@@ -163,7 +163,7 @@ function addMapFieldDefinition(
 
   switch (field.V.kind) {
     case "scalar":
-      if (field.V.T === 12) {
+      if (field.V.T === ScalarType.BYTES) {
         entryDefinitions.push({ name: "value", type: "uint8", isArray: true });
       } else {
         entryDefinitions.push({ name: "value", type: protobufScalarToRosPrimitive(field.V.T) });
