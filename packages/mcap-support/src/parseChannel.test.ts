@@ -6,7 +6,11 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 import fs from "fs";
-import { FileDescriptorSet, IFileDescriptorSet } from "protobufjs/ext/descriptor";
+import {
+  FileDescriptorSet,
+  FieldDescriptorProto_Label,
+  FieldDescriptorProto_Type,
+} from "@bufbuild/protobuf";
 
 import { parseChannel } from "./parseChannel";
 
@@ -41,13 +45,43 @@ describe("parseChannel", () => {
   });
 
   it("works with protobuf", () => {
-    const fds = FileDescriptorSet.encode(FileDescriptorSet.root.toDescriptor("proto3")).finish();
+    const descriptor = new FileDescriptorSet({
+      file: [
+        {
+          name: "google_protobuf.proto",
+          package: "google.protobuf",
+          syntax: "proto3",
+          messageType: [
+            {
+              name: "FileDescriptorProto",
+              field: [
+                { name: "name", number: 1, type: FieldDescriptorProto_Type.STRING },
+              ],
+            },
+            {
+              name: "FileDescriptorSet",
+              field: [
+                {
+                  name: "file",
+                  number: 1,
+                  type: FieldDescriptorProto_Type.MESSAGE,
+                  typeName: "google.protobuf.FileDescriptorProto",
+                  label: FieldDescriptorProto_Label.REPEATED,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }).toBinary();
     const channel = parseChannel({
       messageEncoding: "protobuf",
-      schema: { name: "google.protobuf.FileDescriptorSet", encoding: "protobuf", data: fds },
+      schema: { name: "google.protobuf.FileDescriptorSet", encoding: "protobuf", data: descriptor },
     });
-    const deserialized = channel.deserialize(fds) as IFileDescriptorSet;
-    expect(deserialized.file[0]!.name).toEqual("google_protobuf.proto");
+    const deserialized = channel.deserialize(descriptor) as {
+      file?: { name?: string }[];
+    };
+    expect(deserialized.file?.[0]?.name).toEqual("google_protobuf.proto");
   });
 
   it("works with ros1", () => {
