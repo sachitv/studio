@@ -86,7 +86,7 @@
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
     "@actions/tool-cache": "2.0.2",
-    "@babel/core": "7.28.5",
+    "@babel/core": "7.29.6",
     "@babel/plugin-proposal-decorators": "7.28.0",
     "@babel/plugin-proposal-explicit-resource-management": "7.27.4",
     "@babel/preset-env": "7.28.5",
@@ -116,7 +116,7 @@
     "babel-plugin-transform-import-meta": "2.2.1",
     "cross-env": "10.0.0",
     "depcheck": "1.4.7",
-    "electron": "39.2.7",
+    "electron": "39.8.5",
     "electron-builder": "26.0.12",
     "eslint": "8.57",
     "eslint-config-prettier": "9.1.0",
@@ -148,7 +148,7 @@
     "typescript": "5.9.3",
     "webpack": "5.104.1",
     "webpack-cli": "6.0.1",
-    "webpack-dev-server": "5.2.2",
+    "webpack-dev-server": "5.2.5",
     "webpack-hot-middleware": "2.26.0"
   },
   "dependencies": {
